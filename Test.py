@@ -4,6 +4,8 @@ import os
 import pandas as pd
 import pyupbit
 import Quotation
+import shutil
+
 
 pd.set_option('display.max_row', 500)
 pd.set_option('display.max_columns', 100)
@@ -63,11 +65,11 @@ def calculate_diff_ratio(data):
     ratio = diff * 100
     return ratio
 
-
 # os.chdir(path)로 이미 해당 폴더로 이동한 상태라고 가정함.
-def back_testing(benchmark):
-    result_filename = str(datetime.datetime.today())[0:10] +"_" + str(benchmark)
-    f = open(result_filename+"txt", 'w')
+def back_testing(benchmark,folder_name):
+    os.chdir(folder_name)
+    result_filename = os.getcwd() + "_" + str(benchmark)+".txt"
+    f = open(result_filename, 'w')
     files_list = os.listdir()
     for file in files_list:
         if '.pkl' in file:
@@ -75,12 +77,28 @@ def back_testing(benchmark):
             for i in range(len(data)):
                 ratio = calculate_diff_ratio(data.iloc[i])
                 if ratio > benchmark:
-                    content = str(data.iloc[i].name) + " " + file[4:-6] +" " + str(ratio)
+                    content = str(data.iloc[i].name) + " " + file[4:-6] + " " + str(ratio)
                     f.write(content)
                     f.write('\n')
-    f.write('------------------------------------------------------')
     f.close()
+    """
+    source = 'C:\\Users\\조성민\\PycharmProjects\\Upbit\\'+result_filename[-16:]
+    destination = 'C:\\Users\\조성민\\PycharmProjects\\Upbit\\2021-11-05\\'+result_filename[-16:]
+    shutil.move(source, destination)
+    """
+back_testing(4, '2021-11-05')
 
-os.chdir('2021-11-05')
-back_testing(3)
 
+def key_function(string):
+    return int(string[11:13]) * 3600 + int(string[14:16]) * 60 + int(string[17:19])
+
+
+
+os.chdir('C:\\Users\\조성민\\PycharmProjects\\Upbit')
+f = open('2021-11-05_4.txt', 'r')
+list = f.readlines()
+list.sort(key=key_function)
+f.close()
+f = open('2021-11-05_4.txt', 'w')
+f.writelines(list)
+f.close()
