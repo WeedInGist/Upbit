@@ -52,3 +52,6 @@ def more_than_zero_list(rate=0.0):
     return potential_list.sort()
 # rate 비율보다 높이 오른 코인들을 리스트로 반환
 
+
+
+
